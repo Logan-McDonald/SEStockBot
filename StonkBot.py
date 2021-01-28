@@ -11,6 +11,7 @@ class Stonk:
 
     def __init__(self):
         '''Initialize the stock bot and model if it exists'''
+        self.setup()
         self.inputs=32
         self.filename='stock_model'
         self.model=None
@@ -89,7 +90,7 @@ class Stonk:
         self.model=self.trainModel(data,model)
 
     def getTrainingData(self):
-        '''Returns list of trainint sets'''
+        '''Returns list of training sets'''
         with open(os.path.join('data','tickers.bin'),'rb') as file:
             tickers=pickle.load(file)
         data=[]
@@ -120,8 +121,16 @@ class Stonk:
     def predict(self,ticker,days=100):
         '''Uses the trained model to predict the price of a stock for the next [days] days'''
         date=datetime.datetime.now().strftime("%m-%d-%y")
-        with open(os.path.join('data',ticker,'history',f'{ticker}_{date}.bin'),'rb') as file:
-            data=pickle.load(file)
+        try:
+            with open(os.path.join('data',ticker,'history',f'{ticker}_{date}.bin'),'rb') as file:
+                data=pickle.load(file)
+        except FileNotFoundError:
+            os.mkdir(os.path.join('data',ticker))
+            os.mkdir(os.path.join('data',ticker,'history'))
+            os.mkdir(os.path.join('data',ticker,'predictions'))
+            os.mkdir(os.path.join('data',ticker,'predictions','graphs'))
+            os.mkdir(os.path.join('data',ticker,'predictions','data'))
+            data=self.getHistory(ticker)
         dataset=np.array([np.array([i[0] for i in self.getInputs(data)]).reshape(-1,self.inputs)[-1]])
         predictions=[]
         for x in range(days):
@@ -135,6 +144,7 @@ class Stonk:
         old_days=data['timestamp'][-100:]
         old_days=[(x-datetime.datetime.now().timestamp())/(3600*24) for x in old_days]
         old_prices=data['high'][-100:]
+
         plt.plot(old_days,old_prices,label='Past')
         new_days=range(days+1)
         predictions.insert(0,old_prices[-1])
@@ -147,6 +157,7 @@ class Stonk:
         plt.savefig(os.path.join('data',ticker,'predictions','graphs',name))
         plt.savefig(os.path.join('graphs',name))
         plt.clf()
+        return name
     
     def trainModel(self,data,model):
         '''Trains model using given data'''
@@ -163,31 +174,32 @@ class Stonk:
         for tick in tickers:
             self.predict(tick)
 
-def setup():
-    if not os.path.exists('data'):os.mkdir('data')
-    if not os.path.exists('graphs'):os.mkdir('graphs')
-    tickers={
-        'TSLA':'Tesla',
-        'GME':'Gamestop',
-        'BTC-USD':'Bitcoin',
-        'NOK':'Nokia Corporation',
-        'AAL':'American Airlines Group Inc.',
-        'BB':'BlackBerry Limited',
-        'AAPL':'Apple Inc.',
-        'PLTR':'Palantir Technologies Inc.'
-    }
-    with open(os.path.join('data','tickers.bin'),'wb') as file:
-        pickle.dump(tickers,file)
-    for tick in tickers:
-        if not os.path.exists(os.path.join('data',tick)):
-            os.mkdir(os.path.join('data',tick))
-            os.mkdir(os.path.join('data',tick,'predictions'))
-            os.mkdir(os.path.join('data',tick,'predictions','graphs'))
-            os.mkdir(os.path.join('data',tick,'predictions','data'))
-            os.mkdir(os.path.join('data',tick,'history'))
+    def setup(self):
+        if not os.path.exists('data'):os.mkdir('data')
+        if not os.path.exists('graphs'):os.mkdir('graphs')
+        tickers={
+            'TSLA':'Tesla',
+            'GME':'Gamestop',
+            'BTC-USD':'Bitcoin',
+            'NOK':'Nokia Corporation',
+            'AAL':'American Airlines Group Inc.',
+            'BB':'BlackBerry Limited',
+            'AAPL':'Apple Inc.',
+            'PLTR':'Palantir Technologies Inc.',
+            'GOOGLE':'Google',
+            'AMZN':'Amazon.com, Inc.'
+        }
+        with open(os.path.join('data','tickers.bin'),'wb') as file:
+            pickle.dump(tickers,file)
+        for tick in tickers:
+            if not os.path.exists(os.path.join('data',tick)):
+                os.mkdir(os.path.join('data',tick))
+                os.mkdir(os.path.join('data',tick,'predictions'))
+                os.mkdir(os.path.join('data',tick,'predictions','graphs'))
+                os.mkdir(os.path.join('data',tick,'predictions','data'))
+                os.mkdir(os.path.join('data',tick,'history'))
 
 def main():
-    setup()
     chubs=Stonk()
     chubs.generateModel()
     chubs.generateGraphs()
