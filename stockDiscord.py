@@ -5,7 +5,7 @@ from StonkBot import Stonk
 
 bot=commands.Bot('.')
 
-token='ODA0NDMwMzM1NzQ3Njg2NDc1.YBMOIQ.-9F1rwZlHM_04PRVXQI5ikp2w8U'
+token=''
 
 @bot.event
 async def on_ready():
