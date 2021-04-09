@@ -1,0 +1,17 @@
+.main-content{
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+}
+.landing-page{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 100px;
+    width: 100%;
+}
+.content-side-padding{
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 0px;
+}
