@@ -12,15 +12,17 @@ class Bot:
 
     def __init__(self):
         self.setup()
-        self.inputs=24
-        self.divisor=10000
+        self.inputs=32
+        self.divisor=5000
 
     def getEmptyModel(self):
         '''Creates a new model to train'''
         model=Sequential()
         model.add(Dense(20,activation='tanh'))
-        model.add(Dense(1,activation='tanh'))
-        optimizer=Adam(lr=0.001)
+        model.add(Dense(40,activation='tanh'))
+        model.add(Dense(20,activation='tanh'))
+        model.add(Dense(1,activation='relu'))
+        optimizer=Adam(lr=0.002)
         model.compile(loss='mean_squared_error',optimizer=optimizer,metrics=['mean_squared_error'])
         return model
 
@@ -28,7 +30,6 @@ class Bot:
         '''Returns the timestamps, opens, closes, highs, lows, and adjusted closes
         of a stock over the past 5 years'''
         date=datetime.datetime.today()
-        date=date.replace(day=18)
         day=int(date.strftime('%d'))
         date=date.strftime('%Y-%m-'+str(day))
         path=join('data',ticker,date+'.bin')
@@ -40,7 +41,7 @@ class Bot:
         now=datetime.datetime.now()
         now=now.replace(hour=18,minute=0,second=0)
         period2=now-datetime.timedelta(days=1)
-        period1=period2-datetime.timedelta(days=365*5)
+        period1=period2-datetime.timedelta(days=180)
         period1,period2=str(int(period1.timestamp())),str(int(period2.timestamp()))
         headers={
             'authority': 'query1.finance.yahoo.com',
@@ -96,152 +97,79 @@ class Bot:
         time.sleep(1)
         return data
 
+    def setup(self):
+        folders=['data','graphs']
+        for folder in folders:
+            if not os.path.exists(folder):os.mkdir(folder)
+
     def getInputs(self,history): 
         '''Creates data to train model with'''
         hist=[]
         data=history['high']
         for x in range(self.inputs,len(data)-1):
             cur=data[x-self.inputs:x]
-            f1=data[x]
-            f2=cur[-1]
-            a=((f1-f2)/f2)
-            b=(history['timestamp'][x+1]-history['timestamp'][x])/(3600*24)
-            answer=a/b
-            hist.append([cur,answer])
+            answer=data[x]
+            x_data=[math.sqrt(x/self.divisor) for x in cur]
+            y_data=math.sqrt(answer/self.divisor)
+            hist.append([x_data,y_data])
         return hist
 
-    def trainModel(self,data,model,epochs=5):
-        x_data=np.array([np.array([rx/self.divisor for rx in x[0]])for x in data])
-        y_data=np.array([x[1]for x in data])
-        model.fit(x_data,y_data,epochs=epochs,shuffle=True,batch_size=32)
-        model.save('trained_model')
-
-    def test(self,model):
-        h=self.getHistory('TSLA')
-        inp=self.getInputs(h)
-        x_data=np.array([np.array(x[0]) for x in inp])
-        y_data=np.array([x[1] for x in inp])
-        model.fit(x_data,y_data,epochs=3,shuffle=True)
-        last=h['high'][-100:]
-        times=h['timestamp'][-100:]
-        plt.plot(times,last)
-        pm=x_data[-101]
-        preds=[]
-        for _ in range(100):
-            pr=model.predict(pm.reshape(-1,self.inputs))
-            nx=pm[-1]*(1+pr[0][0])
-            preds.append(nx)
-            pm[0]=pm[-1]
-            pm[-1]=nx
-        plt.plot(times,preds)
-        plt.show()
-
-    def testPrediction(self,model,ticker,days=100,show=False):
+    def testPrediction(self,model,ticker,days=50,show=False):
         history=self.getHistory(ticker)
         data=self.getInputs(history)
         x_data=np.array([np.array(x[0])for x in data])
         y_data=np.array([x[1]for x in data])
-        times=history['timestamp'][-days:]
-        real_data=history['high'][-days:]
-        prediction_data=[]
-        dataset=x_data[(-days)-1]
-        # dataset=np.array([x/self.divisor for x in dataset])
-        
+        times=history['timestamp'][-days-1:]
+        real_data=history['high'][-days-1:]
+        prediction_data=[real_data[0]]
+        dataset=np.array([x for x in x_data[-days]])
+        print(x_data[0])
+        print(dataset)
+        print((x**2)*self.divisor for x in dataset)
         for b in range(days):
-            dataset=np.array([x/self.divisor for x in dataset])
-            #prediction=model.predict(dataset.reshape(-1,self.inputs))[0][0]
             prediction=model.predict(dataset.reshape(-1,self.inputs))[0][0]
-            next_price=dataset[-1]*(1+prediction)
-            prediction_data.append(next_price*self.divisor)
-            dataset=x_data[((-days)+2)+b]
-            # dataset=np.delete(dataset,0)
-            # dataset=np.append(dataset,next_price)
-        plt.plot(times,real_data,color='blue')
-        plt.plot(times[:-1],prediction_data[:-1],color='purple')
+            next_price=(prediction**2)*self.divisor
+            prediction_data.append(next_price)
+            dataset=np.delete(dataset,0)
+            dataset=np.append(dataset,prediction)
+        plt.plot(times,real_data,color='blue',label='actual data')
+        plt.plot(times[:-1],prediction_data[:-1],color='purple',label='prediction')
         plt.title(ticker)
+        plt.legend()
         plt.savefig(join('data',ticker,'prediction.png'))
         plt.savefig(join('graphs',ticker+'.png'))
         if show:plt.show()
         plt.clf()
 
-    def getData(self):
-        with open('working_tickers.bin','rb') as file:
-            tickers=pickle.load(file)
-        data=[]
-        for tick in tickers:
-            history=self.getHistory(tick)
-            data.extend(self.getInputs(history))
-        return data
-
-    def setup(self):
-        folders=['data','graphs']
-        for folder in folders:
-            if not os.path.exists(folder):os.mkdir(folder)
-        tickers={
-            # 'TSLA':'Tesla',
-            # 'GOOGL':'Google',
-            'AAPL':'Apple'
-        }
-        for tick in tickers:
-            path=join('data',tick)
-            if not os.path.exists(path):
-                os.mkdir(path)
-        with open('tickers.bin','wb') as file:
-            pickle.dump(tickers,file)
-
-    def readTickers(self):
-        with open('tickers.txt','r') as file:
-            lines=file.readlines()
-        tickers={}
-        for l in range(len(lines)):
-            line=lines[l]
-            tk=line[:line.find(' ')]
-            name=line[line.find('-')+2:line.find('\n')]
-            tickers[tk]=name
-        return tickers
-
-    def filterTickers(self):
-        tickers=self.readTickers()
-        working={}
-        s=1
-        total=len(tickers)
-        for tick in tickers:
-            print(f'{s}/{total}')
-            s+=1
-            data=self.getHistory(tick)
-            if data:
-                if len(data['timestamp'])<128:continue
-                working[tick]=tickers[tick]
-            time.sleep(1)
-        with open('working_tickers.bin','wb') as file:
-            pickle.dump(working,file)
-    
-    def printTickers(self):
-        with open('working_tickers.bin','rb') as file:
-            tickers=pickle.load(file)
-        print(len(tickers))
-    
-    def generateGraphs(self):
-        model=load_model('trained_model')
-        with open('working_tickers.bin','rb') as file:
-            tickers=pickle.load(file)
-        for x in range(len(tickers)):
-            try:
-                self.testPrediction(model,list(tickers.keys())[x])
-            except Exception as e:
-                print(e)
-
-    def cycle(self):
-        model=self.getEmptyModel()
-        data=self.getData()
-        self.trainModel(data,model,3)
-        self.generateGraphs()
-
+    def trainModel(self,data,model,epochs=5):
+        x_data=np.array([np.array([rx for rx in x[0]])for x in data])
+        y_data=np.array([x[1]for x in data])
+        model.fit(x_data,y_data,epochs=epochs,shuffle=True,batch_size=32)
+        model.save('trained_model')
 
 def main():
+    tickers=['TSLA','GOOGL','GME','AMC','A','AA']
+    tickers=['MSFT','AAPL','AMZN','GOOG','GOOGL','FB','TCEHY','TSM','NVDA','DIS','ASML','INTC','CMCSA','ADBE','VZ','T','CSCO','NFLX','CRM','ORCL','SFTBY']
+    # tickers=['GOOGL']
+    # ticker='GOOGL'
+    # tickers=[ticker]
+    # with open('working_tickers.bin','rb') as file:
+    #     tk=pickle.load(file)
+    # tickers={}
+    # for x in range(20):
+    #     tickers[list(tk.keys())[x]]=tk[list(tk.keys())[x]]
     bot=Bot()
-    bot.cycle()
-    #model=load_model('trained_model')
+    alldata=[]
+    for ticker in tickers:
+        data=bot.getHistory(ticker)
+        stuff=bot.getInputs(data)
+        alldata.extend(stuff)
+    model=bot.getEmptyModel()
+    bot.trainModel(alldata,model,5)
+    model.save('trained_model')
+    model=load_model('trained_model')
+    for ticker in tickers:
+        bot.testPrediction(model,ticker,show=False)
 
 if __name__=='__main__':
     main()
