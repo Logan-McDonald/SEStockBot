@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, url_for, flash, redirect, request
 
 app = Flask(__name__)
 
@@ -13,13 +13,20 @@ def index():
 
 @app.route('/register', methods=['GET','POST'])
 def register():
-    return render_template('register.html')
+    if request.method == "POST":
+        user = request.form['first_name']
+        return redirect(url_for('user', usr=user))
+    else:
+        return render_template('register.html')
 
+@app.route('/<usr>')
+def user(usr):
+    return f'<h1>{usr}</h1>'
 
-
+'''
 @app.route('/login', methods=['GET','POST'])
 def login():
-    return render_template('login.html')
+    return render_template('login.html')'''
 
 
 
