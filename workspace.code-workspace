@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "..\\se-data-structures-ch15-JayKashyap123\\ch15 Collections Framework - Student Repo - 2019"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.classpath": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.factorypath": true
+		}
+	}
+}
