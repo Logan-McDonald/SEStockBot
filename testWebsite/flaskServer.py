@@ -14,12 +14,15 @@ def index():
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == "POST":
+
+        #pulls data from post request
         fname = request.form['first_name']
         lname = request.form['last_name']
         email = request.form['email']
         password = request.form['password']
         password1 = request.form['password_repeat']
 
+        #authenticates account
         if len(fname) < 1:
             flash('Enter valid First Name', category='error')
             return redirect(url_for('register'))
@@ -35,9 +38,19 @@ def register():
         elif password != password1:
             flash('Passwords do not match', category='error')
             return redirect(url_for('register'))
+       
         else:
             flash('Account Created',category='success')
-            return redirect(url_for('landing', usr=fname))
+           
+           #write their data to file
+            f = open('accounts.txt','a')
+            f.write(fname+';')
+            f.write(lname+';')
+            f.write(email+';')
+            f.write(password+'\n') 
+            f.close()
+            
+            return redirect(url_for('landingpage'))
     else:
         return render_template('register.html')
 
@@ -45,9 +58,9 @@ def register():
 def login():
     return render_template('login.html')
 
-@app.route('/landing')
-def landing(usr):
-    return f'<h1> hello , {usr}</h1>'
+@app.route('/landing', methods=['GET','POST'])
+def landingpage():
+    return 'hi'
 
 
 if __name__ == '__main__':
