@@ -1,57 +1,48 @@
-{% extends 'layout.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block container %}
-    <header class="text-center text-white masthead" style="background: #810000;">
-        <div class="masthead-content">
-            <div class="container">
-                <h1 class="masthead-heading mb-0" style="font-size: 64px;">Making, Watching, and Learning</h1>
-                <h2 class="masthead-subheading mb-0" style="font-size: 56px;">All in one place.&nbsp;</h2><a class="btn btn-primary btn-xl rounded-pill mt-5" role="button" href="#" style="background: #eeebdd;color: #1b1717;">Learn More</a>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>NewsPage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Catamaran">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="assets/css/Header-Blue.css">
+    <link rel="stylesheet" href="assets/css/Header-Dark.css">
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body style="background: #eeebdd;">
+    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark navbar-custom">
+        <div class="container"><a class="navbar-brand" href="#">Penny Traders</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navbarResponsive"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Sign Up</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Log In</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="header-dark" style="height: 7vh;color: #810000;background: #810000;margin: -2vh;min-height: none;">
+        <div class="container hero">
+            <div class="row" style="height: 150.000px;max-height: 0px;margin: 56px;">
+                <div class="col-md-8 offset-md-2 text-center" style="height: 97.625px;">
+                    <h1 class="text-center" style="font-size: 5vw;font-family: Catamaran, sans-serif;font-weight: bold;">Stock News</h1>
+                </div>
             </div>
         </div>
     </header>
-    <section style="background: #eeebdd;border-color: #1b1717;">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 order-lg-2">
-                    <div class="p-5"><img class="rounded-circle img-fluid" src="../static/assets/images/img/01.png" style="width: 381px;height: 347.656px;"></div>
-                </div>
-                <div class="col-lg-6 order-lg-1">
-                    <div class="p-5">
-                        <h2 class="display-4">About Us</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse WE MADE BOT amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
-                    </div>
-                </div>
-            </div>
+    <div class="row" style="margin: 0px;padding: 33px;padding-top: 23px;padding-bottom: 23px;height: 200px;">
+        <div class="col">
+            <h1 style="text-align: center;font-family: Catamaran, sans-serif;font-weight: bold;">Choose a Stock</h1>
+            <div class="d-xl-flex justify-content-xl-center"><input class="d-xl-flex justify-content-xl-center" type="text" style="height: 48px;width: 260px;"><button class="btn btn-primary" type="button" style="background: #810000;">Search</button></div>
         </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 order-lg-1">
-                    <div class="p-5"><img class="rounded-circle img-fluid" src="../static/assets/images/img/8.jpg" style="height: 331.656px;"></div>
-                </div>
-                <div class="col-lg-6 order-lg-2">
-                    <div class="p-5">
-                        <h2 class="display-4">All In One Place&nbsp;</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse NEWS/ REDDIT SCRAPE amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section style="background: #eeebdd;">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 order-lg-2">
-                    <div class="p-5"><img class="rounded-circle img-fluid" src="../static/assets/images/img/01.jpg"></div>
-                </div>
-                <div class="col-lg-6 order-lg-1">
-                    <div class="p-5">
-                        <h2 class="display-4">Comfortable, Familiar</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse WE LOVE MARKET MANIPULATION amet aperiam WE ENCOURAGE CHATTING TO UR PEERS, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-{% endblock %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
