@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% block container %}
+    <header class="text-center text-white masthead" style="background: #810000;">
+        <div class="masthead-content">
+            <div class="container">
+                <h1 class="masthead-heading mb-0" style="font-size: 64px;">Talking, Watching, and Learning</h1>
+                <h2 class="masthead-subheading mb-0" style="font-size: 56px;">All in one place.&nbsp;</h2><a class="btn btn-primary btn-xl rounded-pill mt-5" role="button" href="#" style="background: #eeebdd;color: #1b1717;">Learn More</a>
+            </div>
+        </div>
+    </header>
+    <section style="background: #eeebdd;border-color: #1b1717;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="p-5"><img class="rounded-circle img-fluid" src="{{ url_for('static', filename = 'assets/images/img/hands.png')}}" style="width: 381px;height: 347.656px;"></div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="p-5">
+                        <h2 class="display-4">About Us</h2>
+                        <p>Penny Traders goal to find ways to learn more about the stocks with the use of community as well as our stock bot analysis tool. Our tool purpose to to predict trends of different stocks based on the last year information as well as using trends from different community platforms. We want to make sure that people can feel more confidant with any sort of investment they make.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-1">
+                    <div class="p-5"><img class="rounded-circle img-fluid" src="{{ url_for('static', filename = 'assets/images/img/01.png')}}" style="width: 381px;height: 331.656px;"></div>
+                </div>
+                <div class="col-lg-6 order-lg-2">
+                    <div class="p-5">
+                        <h2 class="display-4">filtered for you&nbsp;</h2>
+                        <p>Penny Traders wants to make sure that each person is getting new up to date information that could effect the trend of stocks that they are invested in. We have two tools that a filtered for your use, our reddit scraper which pulls information of stock that seem doing well on different investment community's and our news source which updates with new up to date articles on the current trends within the market.&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section style="background: #eeebdd;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="p-5"><img class="rounded-circle img-fluid" src="{{ url_for('static', filename = 'assets/images/img/world.png')}}" style="width: 381px;height: 347.656px;"></div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="p-5">
+                        <h2 class="display-4">No Restrictions</h2>
+                        <p>Penny Traders prides itself with it community and its messaging system. We want to make sure that Penny traders is a platform where people feel that they can share their opinions of stocks within the market. Either you can chat individually with people or talk to different groups that you can create.&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

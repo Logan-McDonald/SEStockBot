@@ -1,17 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends 'layout.html' %}
+{% block title %}Register{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Register - Penny Traders</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'assets/css/registerbootstrap.min.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
-</head>
-
-<body class="bg-gradient-primary" style="background: #eeebdd;">
-    {% with messages = get_flashed_messages(with_categories=true) %}
+{% block container %}
+{% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
         {% if category == 'error' %}
@@ -31,20 +22,21 @@
         {% endif %}
         {% endfor %}
     {% endif %}
-    {% endwith %}
+{% endwith %}
+
+<body class="bg-gradient-primary" style="background: #eeebdd;">
     <div class="container">
         <div class="card shadow-lg o-hidden border-0 my-5">
             <div class="card-body p-0">
                 <div class="row">
-                    <div class="col-lg-5 d-none d-lg-flex">
-                        <div class="flex-grow-1 bg-register-image" style="background: url(&quot;assets/img/dogs/38706a7d1c315293dd4a233740295652.png&quot;) left / cover no-repeat;"></div>
-                    </div>
-                    <div class="col-lg-7">
+                    
+                    <div class="col" style="margin: 29px;height: 596px;padding: 17px;">
                         <div class="p-5">
+                            
                             <div class="text-center">
                                 <h4 class="text-dark mb-4">Create an Account!</h4>
                             </div>
-                            <form class="user" method="post">
+                            <form class="user" method="POST">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="First Name" name="first_name"></div>
                                     <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="Last Name" name="last_name"></div>
@@ -58,7 +50,7 @@
                                 <hr>
                             </form>
                             <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>
-                            <div class="text-center"><a class="small" href="login.html">Already have an account? Login!</a></div>
+                            <div class="text-center"><a class="small" href="/login">Already have an account? Login!</a></div>
                         </div>
                     </div>
                 </div>
@@ -68,7 +60,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-    <script src="assets/js/registerscript.min.js"></script>
+    <script src="{{ url_for('static', filename = 'assets/login-register/js/script.min.js') }}"></script>
 </body>
 
-</html>
+{% endblock %}
